@@ -31,14 +31,18 @@ public class MealServlet extends HttpServlet {
             new Meal(LocalDateTime.of(2015, Month.MAY, 31, 20, 0), "Ужин", 510)
     );
 
-    List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(meals, LocalTime.of(0, 0), LocalTime.of(23, 59), 2000);
+    List<MealWithExceed> mealsWithExceeded = getFilteredWithExceeded(meals, LocalTime.MIN, LocalTime.MAX, 2000);
+
+    public List<MealWithExceed> getMealsWithExceeded() {
+        return mealsWithExceeded;
+    }
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        log.debug("redirect to meals");
+//        log.debug("redirect to meals");
 
-        req.setAttribute("meals", mealsWithExceeded);
-        req.getServletContext().getRequestDispatcher("/meals.jsp").forward(req, resp);
+        req.setAttribute("meals", getMealsWithExceeded());
+        req.getRequestDispatcher("meals.jsp").forward(req, resp);
 //        resp.sendRedirect("meals.jsp");
     }
 }
