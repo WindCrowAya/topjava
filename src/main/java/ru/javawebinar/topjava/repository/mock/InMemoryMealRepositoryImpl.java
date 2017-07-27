@@ -1,5 +1,6 @@
 package ru.javawebinar.topjava.repository.mock;
 
+import ru.javawebinar.topjava.AuthorizedUser;
 import ru.javawebinar.topjava.model.Meal;
 import ru.javawebinar.topjava.repository.MealRepository;
 import ru.javawebinar.topjava.util.MealsUtil;
@@ -22,7 +23,7 @@ public class InMemoryMealRepositoryImpl implements MealRepository {
 
     @Override
     public Meal save(Meal meal) {
-        if (meal.isNew()) {
+        if (meal.getUserId() == AuthorizedUser.id() && meal.isNew()) {
             meal.setId(counter.incrementAndGet());
         }
         repository.put(meal.getId(), meal);
