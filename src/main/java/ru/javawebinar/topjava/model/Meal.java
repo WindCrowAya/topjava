@@ -1,15 +1,41 @@
 package ru.javawebinar.topjava.model;
 
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
-
+@NamedQueries({
+        @NamedQuery(name = Meal.DELETE, query = "DELETE FROM Meal m WHERE m.id=:id AND m.user_id=:userId"),
+        @NamedQuery(name = Meal.ALL_SORTED, query = "SELECT m FROM Meal m WHERE m.user_id=:userId ORDER BY m.name"),
+        @NamedQuery(name = Meal.BETWEEN, query = "SELECT m FROM Meal m WHERE m.user_id=:userId AND m.date_time " +
+                "BETWEEN startDate=:startDate AND endDate=:endDate ORDER BY m.date_time DESC")  //правильный ли запрос?
+})
+@Entity
+@Table(name = "meals")
 public class Meal extends BaseEntity {
+
+    public static final String DELETE = "Meal.delete";
+    public static final String ALL_SORTED = "Meal.getAllSorted";  //есть ли такой метод?
+    public static final String BETWEEN = "Meal.getBetween";
+
+    @Column(name = "date_time", columnDefinition = "timestamp default now()")
+    @NotNull
     private LocalDateTime dateTime;
 
+    @Column(name = "description", nullable = false)
+    @NotBlank
     private String description;
 
+    @Column(name = "calories")
+    @NotNull
     private int calories;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @NotNull
+    private User user;
 
     public Meal() {
     }
@@ -55,6 +81,14 @@ public class Meal extends BaseEntity {
 
     public void setCalories(int calories) {
         this.calories = calories;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
